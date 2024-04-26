@@ -1,0 +1,14 @@
+//import TriggerEditor.BGMPlayer as BGM;
+import BGM;
+import MusicSetting as ms;
+import musicPlay as mp;
+import opening as op;
+
+function bgmFunc(cp){
+	if(Memory(0x57F1B0, Exactly, cp)){
+		if(Deaths(cp, AtLeast, 1, ms.MUSIC)){
+			BGM.Play();
+			if(ms.MusicShort == 1 && op.setting5 == 0 && mp.MusicAnswerUser == 0 && mp.MusicStep == 3){BGM.ResetTrack();}
+		}
+	}
+}

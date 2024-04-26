@@ -1,0 +1,49 @@
+import build_settings;
+
+import opening as op;
+import musicPlay as mp;
+import bgmplay as bp;
+import MusicSetting as ms;
+import System as sys;
+import BGM;
+import functions as fc;
+
+const s = StringBuffer(1024);
+
+//main.eps는 건드리지 마세요.
+function onPluginStart(){
+	randomize();
+	fc.SingleBan();
+	fc.SpeedBan();
+	fc.mouseInit();
+	fc.checkDebug();
+	SetMemoryEPD(EPD(0x657A9C), SetTo, 0); //화면밝기
+	EUDPlayerLoop()();
+	const cp = getcurpl();
+	if(cp<7){
+		CreateUnit(1, 215, sys.orderLoc+cp, cp);
+		fc.PlayerInit();
+	}
+	EUDEndPlayerLoop();
+}
+
+function beforeTriggerExec(){
+	SetMemory(0x6509A0, SetTo, 0); //EUD터보
+	SetMemory(0x5124F0, SetTo, 29);	//x2배속
+	RemoveUnit(215, P12);
+	sys.OrderSys();
+	mp.musicSystem();
+	fc.playerKick();
+}
+
+function afterTriggerExec(){
+	EUDPlayerLoop()();
+	const cp = getcurpl();
+	if(cp<7){
+		bp.bgmFunc(cp);
+		if(op.opening[cp] < 9999){op.OpeningText(cp);} //오프닝
+		mp.musicPlay(cp); //게임 진행
+		ms.EffectSound(cp); //효과음 사운드 처리
+	}
+	EUDEndPlayerLoop();
+}

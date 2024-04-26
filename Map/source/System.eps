@@ -1,0 +1,28 @@
+import opening as op;
+import functions as fc;
+
+const orderLoc	= $L("Order1");
+var setUser		= 0; //유저
+var UserNumber	= 0;
+
+function OrderSys(){
+	for(var i=6; i>0; i--){
+		if(Bring(Force1, AtLeast, 1, 215, orderLoc+i) && Bring(Force1, Exactly, 0, 215, orderLoc+i-1)){
+			MoveUnit(1, 215, Force1, orderLoc+i, orderLoc+i-1);
+		}
+	}
+	if(Command(fc.superUser, Exactly, 1, 215)){
+		if(setUser != fc.superUser){
+			setUser = fc.superUser;
+		}
+	}
+	else{
+		for(var i=0; i<7; i++){
+			if(Bring(i, Exactly, 1, 215, orderLoc)){
+				if(setUser != i){setUser = i; for(var i=0; i<7; i++){op.TextUpdate[i] = 1;} break;}
+			}
+		}
+	}
+	UserNumber = 0;
+	for(var i=0; i<7; i++){if(Command(i, Exactly, 1, 215)){UserNumber += 1;}}
+}

@@ -1,0 +1,33 @@
+import build_settings.SegmentCount; // = [0, 14, 14, ...]
+var lasttimer;
+var bgmindex;
+const strbuf = StringBuffer(1024);
+var segmentindex;
+
+function SetBGM(bindex /*BGM*/){
+	if(IsUserCP()){
+		bgmindex = bindex;
+		lasttimer = dwread_epd(EPD(0x51CE8C));
+		segmentindex = 0;
+	}
+}
+
+function Play(){
+	if(IsUserCP()){
+		const CurrentTime = dwread_epd(EPD(0x51CE8C));
+		const FrameTick = (lasttimer - CurrentTime);
+
+		if (FrameTick >= 2220){
+			lasttimer = dwread_epd(EPD(0x51CE8C));
+			dbstr_print(GetMapStringAddr(strbuf.StringIndex), bgmindex, "-", segmentindex, ".ogg");
+			strbuf.Play();
+			segmentindex += 1;
+			if (segmentindex > SegmentCount[bgmindex])
+				segmentindex = 0;
+		}
+	}
+}
+
+function ResetTrack() {
+	segmentindex = 0;
+}
